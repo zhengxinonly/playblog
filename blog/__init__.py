@@ -4,7 +4,7 @@ import click
 from flask import Flask
 from configs import config
 from extensions import db
-from models import Admin, Post, Category, Comment
+from models import Admin, Post, Category, Comment, Link
 
 from .auth import auth_bp
 from .admin import admin_bp
@@ -22,6 +22,7 @@ def create_app(config_name=None):
     register_extensions(app)
     register_commands(app)
     register_shell_context(app)
+    register_template_context(app)
 
     return app
 
@@ -83,3 +84,14 @@ def register_shell_context(app):
     @app.shell_context_processor
     def make_shell_context():
         return dict(db=db, Admin=Admin, Post=Post, Category=Category, Comment=Comment)
+
+
+def register_template_context(app):
+    """注册模板上下文"""
+
+    @app.context_processor
+    def make_template_context():
+        admin = Admin.query.first()
+        categories = Category.query.order_by(Category.name).all()
+        links = Link.query.order_by(Link.name).all()
+        return dict(admin=admin, categories=categories, links=links)
