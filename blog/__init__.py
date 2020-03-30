@@ -3,7 +3,7 @@ import os
 import click
 from flask import Flask
 from configs import config
-from extensions import db
+from extensions import db, bootstrap
 from models import Admin, Post, Category, Comment, Link
 
 from .auth import auth_bp
@@ -35,6 +35,7 @@ def register_blueprint(app):
 
 def register_extensions(app):
     db.init_app(app)
+    bootstrap.init_app(app)
 
 
 def register_commands(app):
