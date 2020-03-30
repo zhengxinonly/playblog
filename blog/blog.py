@@ -1,4 +1,6 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, current_app, request
+
+from models import Post
 
 blog_bp = Blueprint('blog', __name__)
 
@@ -10,7 +12,12 @@ def blog():
 
 @blog_bp.route('/')
 def index():
-    return render_template('index.html')
+    page = request.args.get('page', 1, type=int)
+    per_page = current_app.config['PLAYBLOG_POST_PER_PAGE']
+    pagination = Post.query.order_by(Post.timestamp.desc()).paginate(page, per_page=per_page)
+    posts = pagination.items
+    # posts = Post.query.order_by(Post.timestamp.desc()).all()
+    return render_template('index.html', posts=posts, pagination=pagination)
 
 
 @blog_bp.route('/about')
