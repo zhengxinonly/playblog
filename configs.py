@@ -6,9 +6,9 @@ basedir = os.path.abspath(os.path.dirname(__name__))
 
 WIN = sys.platform.startswith('win')
 if WIN:
-    prefix = 'sqllite:///'
+    prefix = 'sqlite:///'
 else:
-    prefix = 'sqllite:////'
+    prefix = 'sqlite:////'
 
 
 class BaseConfig:
