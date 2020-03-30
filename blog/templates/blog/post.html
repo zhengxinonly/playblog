@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>{{ post.title }}
+            <span class="float-right">
+      </span>
+        </h1>
+        <small>
+            分类: <a
+                href="{{ url_for('.show_category', category_id=post.category.id) }}">{{ post.category.name }}</a><br>
+            时间: {{ post.timestamp }}
+        </small>
+    </div>
+    <div class="row">
+        <div class="col-sm-8">
+            {{ post.body|safe }}
+            <hr>
+        </div>
+        <div class="col-sm-4 sidebar">
+            {% include "blog/sidebar.html" %}
+        </div>
+    </div>
+{% endblock %}
