@@ -1,7 +1,7 @@
 import os
 
 import click
-from flask import Flask
+from flask import Flask, render_template
 from configs import config
 from extensions import db, bootstrap
 from models import Admin, Post, Category, Comment, Link
@@ -23,6 +23,7 @@ def create_app(config_name=None):
     register_commands(app)
     register_shell_context(app)
     register_template_context(app)
+    register_errors(app)
 
     return app
 
@@ -96,3 +97,19 @@ def register_template_context(app):
         categories = Category.query.order_by(Category.name).all()
         links = Link.query.order_by(Link.name).all()
         return dict(admin=admin, categories=categories, links=links)
+
+
+def register_errors(app):
+    """配置错误页面"""
+
+    @app.errorhandler(400)
+    def bad_request(e):
+        return render_template('errors/400.html'), 400
+
+    @app.errorhandler(404)
+    def page_not_found(e):
+        return render_template('errors/404.html'), 404
+
+    @app.errorhandler(500)
+    def internal_server_error(e):
+        return render_template('errors/500.html'), 500
