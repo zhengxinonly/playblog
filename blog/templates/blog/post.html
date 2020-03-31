@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
 
 {% block title %}{{ post.title }}{% endblock %}
 
@@ -18,6 +19,55 @@
         <div class="col-sm-8">
             {{ post.body|safe }}
             <hr>
+            <div class="comments" id="comments">
+                <h3>{{ comments|length }} 评论
+                </h3>
+{% if comments %}
+    <ul class="list-group">
+        {% for comment in comments %}
+            <li class="list-group-item list-group-item-action flex-column">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">
+                        <a href="{% if comment.site %}{{ comment.site }}{% else %}#{% endif %}"
+                           target="_blank">
+                            {% if comment.from_admin %}
+                                {{ admin.name }}
+                            {% else %}
+                                {{ comment.author }}
+                            {% endif %}
+                        </a>
+                        {% if comment.from_admin %}
+                            <span class="badge badge-primary">作者</span>
+                        {% endif %}
+                        {% if comment.replied %}
+                            <span class="badge badge-light">回复</span>
+                        {% endif %}
+                    </h5>
+                    <small>
+                        {{- comment.timestamp -}}
+                    </small>
+                </div>
+                {#如果有评论者 #}
+                {% if comment.replied %}
+                    <p class="alert alert-dark reply-body">{{ comment.replied.author }}:
+                        <br>{{ comment.replied.body }}
+                    </p>
+                {%- endif -%}
+                <p class="mb-1">{{ comment.body }}</p>
+                {#评论评论#}
+                <div class="float-right">
+                    <a class="btn btn-light btn-sm"
+                       href="{{ url_for('.reply_comment', comment_id=comment.id) }}">评论</a>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+    {{ render_pagination(pagination) }}
+{% else %}
+    <div class="tip"><h5>没有评论.</h5></div>
+{% endif %}
+            </div>
+
         </div>
         <div class="col-sm-4 sidebar">
             {% include "blog/sidebar.html" %}
