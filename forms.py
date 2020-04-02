@@ -18,7 +18,7 @@ class RegisterForm(FlaskForm):
     """注册表单"""
     username = StringField('用户名：', validators=[DataRequired(), Length(1, 20)])
     password = PasswordField('密码：', validators=[DataRequired(), Length(1, 128)])
-    email = Email('邮箱：')
+    email = StringField('邮箱', validators=[DataRequired(), Email(), Length(1, 254)])
     submit = SubmitField('注册')
 
 
@@ -48,8 +48,5 @@ class CategoryForm(FlaskForm):
 
 class CommentForm(FlaskForm):
     """评论表单"""
-    author = StringField('Name', validators=[DataRequired(), Length(1, 30)])
-    email = StringField('Email', validators=[DataRequired(), Email(), Length(1, 254)])
-    site = StringField('Site', validators=[Optional(), URL(), Length(0, 255)])
-    body = TextAreaField('Comment', validators=[DataRequired()])
-    submit = SubmitField()
+    body = TextAreaField('给作者留言', validators=[DataRequired()])
+    submit = SubmitField("提交")

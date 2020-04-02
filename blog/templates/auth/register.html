@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/form.html' import render_form %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+    <div class="container h-100">
+        <div class="row h-100 page-header justify-content-center align-items-center">
+            <h1>注册</h1>
+        </div>
+        <div class="row h-100 justify-content-center align-items-center">
+            {{ render_form(form, extra_classes='col-6') }}
+        </div>
+        <div class="row h-100 justify-content-center align-items-center">
+            <p>已有账号？<a href="{{ url_for('auth.login') }}">点击登录</a></p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}{% endblock %}

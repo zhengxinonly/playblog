@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, current_app, request
 
+from forms import CommentForm
 from models import Post, Category, Comment
 
 blog_bp = Blueprint('blog', __name__)
@@ -43,7 +44,10 @@ def show_post(post_id):
     pagination = Comment.query.with_parent(post).filter_by(reviewed=True).order_by(Comment.timestamp.asc()).paginate(
         page, per_page)
     comments = pagination.items
-    return render_template('blog/post.html', post=post, pagination=pagination, comments=comments)
+
+    form = CommentForm()
+
+    return render_template('blog/post.html', post=post, pagination=pagination, comments=comments, form=form)
 
 
 @blog_bp.route('/reply/comment/<int:comment_id>')
