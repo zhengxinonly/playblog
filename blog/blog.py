@@ -1,5 +1,7 @@
-from flask import Blueprint, render_template, current_app, request
+from flask import Blueprint, render_template, current_app, request, flash, redirect, url_for
+from flask_login import current_user
 
+from extensions import db
 from forms import CommentForm
 from models import Post, Category, Comment
 
@@ -46,10 +48,34 @@ def show_post(post_id):
     comments = pagination.items
 
     form = CommentForm()
+    if form.validate_on_submit():
+        if current_user.is_authenticated:
+            flash('评论已经成功发表.', 'success')
+            author = current_user.username
+            email = current_user.email
+            body = form.body.data
+            comment = Comment(
+                author=author, email=email, body=body,
+                post=post, reviewed=True)
 
+            replied_id = request.args.get('reply')
+            if replied_id:
+                replied_comment = Comment.query.get_or_404(replied_id)
+                comment.replied = replied_comment
+
+            db.session.add(comment)
+            db.session.commit()
+        else:
+            flash('登录之后才能发表评论', 'info')
+        return redirect(url_for('.show_post', post_id=post_id))
     return render_template('blog/post.html', post=post, pagination=pagination, comments=comments, form=form)
 
 
 @blog_bp.route('/reply/comment/<int:comment_id>')
 def reply_comment(comment_id):
-    pass
+    comment = Comment.query.get_or_404(comment_id)
+    if not comment.post.can_comment:
+        flash('该留言不可以评论.', 'warning')
+        return redirect(url_for('.show_post', post_id=comment.post.id))
+    return redirect(
+        url_for('.show_post', post_id=comment.post_id, reply=comment_id, author=comment.author) + '#comment-form')
