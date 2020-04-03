@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
+
+{% block title %}Manage Comments{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>总评论
+            <small class="text-muted">{{ pagination.total }}</small>
+        </h1>
+
+        <ul class="nav nav-pills">
+            <li class="nav-item">
+                <a class="nav-link disabled" href="#">过滤 </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.args.get('filter', 'all') == 'all' %}active{% endif %}"
+                   href="{{ url_for('admin.manage_comment', filter='all') }}">所有</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.args.get('filter') == 'admin' %}active{% endif %}"
+                   href="{{ url_for('admin.manage_comment', filter='admin') }}">管理员</a>
+            </li>
+        </ul>
+    </div>
+
+    {% if comments %}
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>编号</th>
+                <th>作者</th>
+                <th>内容</th>
+                <th>时间</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            {% for comment in comments %}
+                <tr>
+                    <td>{{ loop.index + ((pagination.page - 1) * config['PLAYBLOG_COMMENT_PER_PAGE']) }}</td>
+                    <td>
+                        {% if comment.from_admin %}{{ admin.name }}{% else %}{{ comment.author }}{% endif %}<br>
+                        {% if comment.site %}
+                            <a href="{{ comment.site }}" target="_blank">
+                                {{ comment.site }}
+                            </a><br>
+                        {% endif %}
+                        <a href="mailto:{{ comment.email }}">{{ comment.email }}</a>
+
+                        {% if comment.from_admin %}
+                            <span class="badge badge-primary">作者</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ comment.body }}</td>
+                    <td>{{ comment.timestamp }}</td>
+                    <td>
+                        <a class="btn btn-info btn-sm" href="{{ url_for('blog.show_post', post_id=comment.post.id) }}">Post</a>
+                        <form class="inline" method="post"
+                              action="{{ url_for('.delete_comment', comment_id=comment.id, next=request.full_path) }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                    onclick="return confirm('确认删除 ?');">删除
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        <div class="page-footer">{{ render_pagination(pagination) }}</div>
+    {% else %}
+        <div class="tip"><h5>没有评论.</h5></div>
+    {% endif %}
+{% endblock %}

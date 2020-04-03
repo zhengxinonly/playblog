@@ -50,3 +50,9 @@ class CommentForm(FlaskForm):
     """评论表单"""
     body = TextAreaField('给作者留言', validators=[DataRequired()])
     submit = SubmitField("提交")
+
+
+class LinkForm(FlaskForm):
+    name = StringField('名字', validators=[DataRequired(), Length(1, 30)])
+    url = StringField('网址', validators=[DataRequired(), URL(), Length(1, 255)])
+    submit = SubmitField()
