@@ -16,7 +16,7 @@ def manage_post():
     pagination = Post.query.order_by(Post.timestamp.desc()).paginate(
         page, per_page=current_app.config['PLAYBLOG_MANAGE_POST_PER_PAGE'])
     posts = pagination.items
-    return render_template('admin/manage_category.html', page=page, pagination=pagination, posts=posts)
+    return render_template('admin/manage_post.html', page=page, pagination=pagination, posts=posts)
 
 
 @admin_bp.route('/post/new', methods=['GET', 'POST'])
