@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}{% endblock title %} - {{ admin.blog_title|default('Blog Title') }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='editor.md-master/css/editormd.css') }}"/>
+    <script type="text/javascript"
+            src="{{ url_for('static', filename='editor.md-master/examples/js/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='editor.md-master/editormd.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.min.css') }}" type="text/css">
+
+{% endblock head %}
+
+{% block content %}
+
+    <form action="" method="post" class="form" role="form">
+        {{ form.hidden_tag() }}
+        <div class="form-group required">
+            <label class="form-control-label" for="title">{{form.title.label}}</label>
+            {{ form.title(class_='form-control') }}
+        </div>
+
+
+        <div class="form-group"><label class="form-control-label" for="category">{{form.categories.label}}</label>
+            {{ form.categories(class_='form-control') }}
+        </div>
+
+        <div class="form-group required"><label class="form-control-label" for="body">{{form.body.label}}</label>
+            <div id="body" name="body">
+                <textarea></textarea>
+            </div>
+        </div>
+            {{ form.submit() }}
+    </form>
+
+{% endblock content %}
+
+
+{% block scripts %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script>
+        var testEditor;
+        testEditor = editormd("body", {
+            placeholder: '本编辑器支持Markdown编辑，左边编写，右边预览',  //默认显示的文字，这里就不解释了
+            width: "100%",
+            height: 640,
+            syncScrolling: "single",
+            path: "../../static/editor.md-master/lib/",   //你的path路径（原资源文件中lib包在我们项目中所放的位置）
+            saveHTMLToTextarea: true,
+            emoji: false,
+            taskList: true,
+            tocm: true,         // Using [TOCM]
+            tex: true,                   // 开启科学公式TeX语言支持，默认关闭
+            flowChart: true,             // 开启流程图支持，默认关闭
+            sequenceDiagram: true,       // 开启时序/序列图支持，默认关闭,
+            toolbarIcons: function () {  //自定义工具栏，后面有详细介绍
+                return editormd.toolbarModes['simple']; // full, simple, mini
+            },
+        });
+    </script>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='editor.md-master/lib/codemirror/addon/search/matchesonscrollbar.css') }}"/>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
+
+{% block title %}Manage Posts{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>文章数量
+        <small class="text-muted">{{ pagination.total }}</small>
+    </h1>
+</div>
+{% if posts %}
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>文章编号</th>
+        <th>标题</th>
+        <th>类别</th>
+        <th>时间</th>
+        <th>评论</th>
+        <th>单词</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    {% for post in posts %}
+    <tr>
+        <td>{{ loop.index + ((page - 1) * config.PLAYBLOG_MANAGE_POST_PER_PAGE) }}</td>
+        <td><a href="{{ url_for('blog.show_post', post_id=post.id) }}">{{ post.title }}</a></td>
+        <td><a href="{{ url_for('blog.show_category', category_id=post.category.id) }}">{{ post.category.name }}</a>
+        </td>
+        <td>{{ post.timestamp }}</td>
+        <td><a href="{{ url_for('blog.show_post', post_id=post.id) }}#comments">{{ post.comments|length }}</a></td>
+        <td>{{ post.body|length }}</td>
+        <td>
+            <form class="inline" method="post"
+                  action="{{ url_for('.set_comment', post_id=post.id, next=request.full_path) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <button type="submit" class="btn btn-warning btn-sm">
+                    {% if post.can_comment %}关闭{% else %}打开{% endif %}评论
+                </button>
+            </form>
+            <a class="btn btn-info btn-sm" href="{{ url_for('admin.edit_post', post_id=post.id) }}">编辑</a>
+            <form class="inline" method="post"
+                  action="{{ url_for('.delete_post', post_id=post.id, next=request.full_path) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('确认删除 ?');">删除
+                </button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+<div class="page-footer">{{ render_pagination(pagination) }}</div>
+{% else %}
+<div class="tip"><h5>No posts.</h5></div>
+{% endif %}
+{% endblock %}

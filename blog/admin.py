@@ -4,7 +4,7 @@ from flask_login import login_required
 from extensions import db
 from forms import PostForm, CategoryForm, LinkForm
 from models import Category, Post, Comment, Link
-from utils import redirect_back
+from utils import redirect_back, html2md
 
 admin_bp = Blueprint('admin', __name__)
 
@@ -23,6 +23,15 @@ def manage_post():
 @login_required
 def new_post():
     form = PostForm()
+    if form.validate_on_submit():
+        title = form.title.data
+        body = request.form.get('body-html-code')
+        category = Category.query.get(form.categories.data)
+        post = Post(title=title, body=body, category=category)
+        db.session.add(post)
+        db.session.commit()
+        flash('文章已经被创建.', 'success')
+        return redirect(url_for('blog.show_post', post_id=post.id))
     return render_template('admin/new_post.html', form=form)
 
 
@@ -30,6 +39,18 @@ def new_post():
 @login_required
 def edit_post():
     form = PostForm()
+    post_id = request.args.get('post_id')
+    post = Post.query.get_or_404(post_id)
+    if form.validate_on_submit():
+        post.title = form.title.data
+        post.body = request.form.get('body-html-code')
+        post.category = Category.query.get(form.categories.data)
+        db.session.commit()
+        flash('文章已经更新', 'success')
+        return redirect(url_for('blog.show_post', post_id=post.id))
+    form.title.data = post.title
+    form.body.data = html2md(post.body)
+    form.categories.data = post.category_id
     return render_template('admin/edit_post.html', form=form)
 
 

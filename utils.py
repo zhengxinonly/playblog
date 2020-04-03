@@ -1,3 +1,6 @@
+import tomd
+import re
+
 try:
     from urlparse import urlparse, urljoin
 except ImportError:
@@ -21,3 +24,9 @@ def redirect_back(default='blog.index', **kwargs):
     return redirect(url_for(default, **kwargs))
 
 
+def html2md(html) -> str:
+    r_html = tomd.Tomd(html).markdown
+    r_html = re.sub('<a.*?></a>', "", r_html)
+    r_html = re.sub('<br>', "\n", r_html)
+    html = r_html if r_html else html
+    return html
