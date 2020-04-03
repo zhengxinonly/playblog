@@ -39,13 +39,15 @@
 
                 </div>
                 <ul class="nav navbar-nav navbar-right">
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('auth.logout') }}">退出</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('auth.login') }}">登录</a>
-                    </li>
+                    {% if current_user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('auth.logout') }}">退出</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('auth.login') }}">登入</a>
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
 

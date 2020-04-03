@@ -1,16 +1,22 @@
 from datetime import datetime
 
+from flask_login import UserMixin
+
 from extensions import db
 
 
-class Admin(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+class Admin(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(20))
     password_hash = db.Column(db.String(128))
     blog_title = db.Column(db.String(60))
     blog_sub_title = db.Column(db.String(100))
     name = db.Column(db.String(30))
+    email = db.Column(db.String(30))
     about = db.Column(db.Text)
+
+    def validate_password(self, password):
+        return self.password_hash == password
 
 
 class Category(db.Model):
