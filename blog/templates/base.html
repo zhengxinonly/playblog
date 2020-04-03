@@ -38,33 +38,35 @@
                     </ul>
 
                 </div>
-                <ul class="nav navbar-nav navbar-right">
-                    <li class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button"
-                           aria-haspopup="true"
-                           aria-expanded="false">
-                            创建 <span class="caret"></span>
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="{{ url_for('admin.new_post') }}">文章</a>
-                            <a class="dropdown-item" href="{{ url_for('admin.new_category') }}">分类</a>
-                            <a class="dropdown-item" href="{{ url_for('admin.new_link') }}">外链</a>
-                        </div>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button"
-                           aria-haspopup="true"
-                           aria-expanded="false">
-                            管理 <span class="caret"></span>
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="{{ url_for('admin.manage_post') }}">文章</a>
-                            <a class="dropdown-item" href="{{ url_for('admin.manage_comment') }}">评论</a>
-                            <a class="dropdown-item" href="{{ url_for('admin.manage_category') }}">分类</a>
-                            <a class="dropdown-item" href="{{ url_for('admin.manage_link') }}">外链</a>
-                        </div>
-                    </li>
-                </ul>
+                {% if current_user.is_authenticated %}
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button"
+                               aria-haspopup="true"
+                               aria-expanded="false">
+                                创建 <span class="caret"></span>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="{{ url_for('admin.new_post') }}">文章</a>
+                                <a class="dropdown-item" href="{{ url_for('admin.new_category') }}">分类</a>
+                                <a class="dropdown-item" href="{{ url_for('admin.new_link') }}">外链</a>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button"
+                               aria-haspopup="true"
+                               aria-expanded="false">
+                                管理 <span class="caret"></span>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="{{ url_for('admin.manage_post') }}">文章</a>
+                                <a class="dropdown-item" href="{{ url_for('admin.manage_comment') }}">评论</a>
+                                <a class="dropdown-item" href="{{ url_for('admin.manage_category') }}">分类</a>
+                                <a class="dropdown-item" href="{{ url_for('admin.manage_link') }}">外链</a>
+                            </div>
+                        </li>
+                    </ul>
+                {% endif %}
                 <ul class="nav navbar-nav navbar-right">
                     {% if current_user.is_authenticated %}
                         <li class="nav-item">
@@ -97,6 +99,11 @@
             <p class="float-left">
                 <small> &copy; 2020 <a href="#" title="Written PlayBlog">PlayBlog</a> -
                     <a href="#" title="Fork me on GitHub">GitHub</a>
+                </small>
+            </p>
+        <p class="float-right">
+                <small>
+                    <a href="http://www.beian.miit.gov.cn/" target="_blank">湘ICP备20006624</a>
                 </small>
             </p>
         </footer>
